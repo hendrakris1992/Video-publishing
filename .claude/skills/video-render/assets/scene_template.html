@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Promo scene template</title>
+<style>
+/* 1080x1920 (9:16). Safe area for phone UI overlays: 72px sides, 220px top, 380px bottom. Fonts: Sora (display), Inter (text, figures). */
+:root{--bg:#0B1220;--panel:#141E33;--ink:#F4F7FB;--mute:#8FA3BF;--up:#3DDC97;--down:#FF6B6B;--accent:#6AA9FF}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;background:var(--bg);color:var(--ink);overflow:hidden;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.scene{position:absolute;inset:0;opacity:0}
+.safe{position:absolute;left:72px;right:72px;top:220px;bottom:380px}
+.kicker{font:700 40px 'Inter';letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.title{font:800 104px/1.04 'Sora';margin-top:28px}
+.word{display:inline-block;opacity:0;transform:translateY(40px)}
+.big{font:800 230px/1 'Sora';letter-spacing:-.02em}
+.label{font:500 48px/1.25 'Inter';color:var(--mute);margin-top:24px}
+.bars{position:absolute;left:0;right:0;top:100px;height:1060px}
+.zero{position:absolute;left:0;right:0;height:3px;background:#2A3856}
+.bar{position:absolute;width:250px}
+.bar .v{position:absolute;left:-20px;right:-20px;text-align:center;font:800 56px 'Sora'}
+.n{position:absolute;text-align:center;font:500 42px 'Inter';color:var(--mute)}
+.cap{position:absolute;left:72px;right:72px;bottom:430px;text-align:center;font:700 54px/1.25 'Inter'}
+.cap span{background:rgba(11,18,32,.82);padding:6px 18px;border-radius:14px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.foot{position:absolute;left:72px;right:72px;top:96px;display:flex;justify-content:space-between;font:500 34px 'Inter';color:var(--mute)}
+.sample{position:absolute;left:0;right:0;top:960px;text-align:center;font:800 120px 'Sora';color:rgba(255,107,107,.16);transform:rotate(-12deg)}
+</style></head><body>
+<div class="foot"><span id="asof"></span><span id="audit"></span></div>
+<div id="stage"></div>
+<div class="cap"><span id="cap"></span></div>
+<div class="sample" id="sample"></div>
+<script>
+/* ===== 1. DATA (every number on screen comes from here; fill only from the AUDITED research; sample=true shows a SAMPLE watermark) ===== */
+const DATA={sample:true,captionsOn:true,asof:"As of: <date and time WIB>",audit:"Audited by Ein: <status>",
+ hook:["The","rupiah","is","the","story"],kicker:"New collection",
+ big:{value:100.0,decimals:2,label:"<what the number is, unit, as-of>",delta:"+0.0%",deltaDir:"up"},
+ bars:{title:"<chart title>",unit:"%",items:[{name:"<A>",v:1.0},{name:"<B>",v:-0.5},{name:"<C>",v:2.0}]},
+ end:"Shop now",
+ captions:[{s:0.2,e:2.0,t:"<caption 1>"},{s:2.4,e:5.0,t:"<caption 2>"},{s:5.4,e:8.8,t:"<caption 3>"}]}; // captions: use the voice timing JSON (paragraph start/end) 
+/* ===== 2. TIMELINE (seconds). Scenes fade in 0.35s, out 0.3s. Keep one idea per scene, 3-6 s each. ===== */
+const SC=[{id:"s1",a:0,b:2.4},{id:"s2",a:2.4,b:5.4},{id:"s3",a:5.4,b:9.0},{id:"s4",a:9.0,b:11.0}];
+window.__duration=SC[SC.length-1].b;
+const SCN=Object.fromEntries(SC.map(s=>[s.id,s])); // scene order on the timeline is free; all animation times below are relative to a scene's start
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), ease=x=>1-Math.pow(1-clamp(x),3), pr=(t,a,d)=>ease((t-a)/d);
+const fmt=(v,d)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const E=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const stage=document.getElementById('stage');
+function mk(id,html){const d=document.createElement('div');d.className='scene';d.id=id;d.innerHTML='<div class="safe">'+html+'</div>';stage.appendChild(d);return d}
+mk('s1','<div class="kicker">'+E(DATA.kicker)+'</div><div class="title" style="margin-top:120px">'+DATA.hook.map(w=>'<span class="word">'+E(w)+'</span>').join(' ')+'</div>');
+mk('s2','<div class="kicker">Level</div><div class="big" id="bigv" style="margin-top:140px"></div><div class="label">'+DATA.big.label+'</div><div class="label" id="delta" style="font:800 80px Sora;margin-top:50px"></div>');
+const NB=DATA.bars.items.length, GAP=NB>4?16:70, BW=Math.min(250,Math.floor((936-(NB-1)*GAP)/NB)), BX=k=>k*(BW+GAP)+Math.max(0,(936-(NB*BW+(NB-1)*GAP))/2), VF=BW<200?38:56;
+const maxAbs=Math.max(...DATA.bars.items.map(i=>Math.abs(i.v)),1e-9), SCALE=380/maxAbs, ZERO=500;
+mk('s3','<div class="kicker">'+E(DATA.bars.title)+'</div><div class="bars" id="bars"><div class="zero" style="top:'+ZERO+'px"></div>'+DATA.bars.items.map((it,k)=>'<div class="bar" id="b'+k+'" style="left:'+BX(k)+'px;width:'+BW+'px;background:'+(it.v>=0?'var(--up)':'var(--down)')+'"><div class="v"></div></div><div class="n" style="left:'+(BX(k)-10)+'px;top:1010px;width:'+(BW+20)+'px;font-size:'+(BW<200?34:42)+'px">'+E(it.name)+'</div>').join('')+'</div>');
+mk('s4','<div class="title" style="margin-top:300px;font-size:84px">'+E(DATA.end)+'</div>');
+{const bv=document.getElementById('bigv'),n=fmt(DATA.big.value,DATA.big.decimals).length;bv.style.fontSize=Math.min(230,Math.floor(936/(n*0.68)))+'px'} // auto-fit: the big number must stay inside the 936 px safe width
+document.getElementById('asof').textContent=DATA.asof;document.getElementById('audit').textContent=DATA.audit;
+document.getElementById('sample').textContent=DATA.sample?'SAMPLE DATA':'';
+/* ===== 3. SEEK(t): a pure function of t ===== */
+window.__seek=function(t){
+ for(const s of SC){const el=document.getElementById(s.id);el.style.opacity=clamp(Math.min((t-s.a)/0.35,(s.b-t)/0.3))*(t>=s.a&&t<=s.b?1:0)}
+ document.querySelectorAll('#s1 .word').forEach((w,i)=>{const p=pr(t,SCN.s1.a+0.1+i*0.18,0.5);w.style.opacity=p;w.style.transform='translateY('+(40*(1-p))+'px)'});
+ const p2=pr(t,SCN.s2.a+0.1,1.2);document.getElementById('bigv').textContent=fmt(DATA.big.value*p2,DATA.big.decimals);
+ const dl=document.getElementById('delta');dl.textContent=DATA.big.delta;dl.style.color=DATA.big.deltaDir==='up'?'var(--up)':'var(--down)';dl.style.opacity=pr(t,SCN.s2.a+1.3,0.5);
+ DATA.bars.items.forEach((it,k)=>{const b=document.getElementById('b'+k),g=pr(t,SCN.s3.a+0.2+k*0.25,0.9),H=Math.abs(it.v)*SCALE*g,v=b.querySelector('.v');
+  b.style.height=H+'px';b.style.top=(it.v>=0?ZERO-H:ZERO)+'px';b.style.borderRadius=it.v>=0?'18px 18px 0 0':'0 0 18px 18px';
+  v.style.top=it.v>=0?'-76px':(H+12)+'px';v.style.fontSize=VF+'px';v.style.color=it.emph?'var(--accent)':'var(--ink)';v.textContent=(it.v>0?'+':'')+fmt(it.v*g,1)+DATA.bars.unit});
+ const c=DATA.captionsOn?DATA.captions.find(c=>t>=c.s&&t<=c.e):null;const ce=document.getElementById('cap');ce.textContent=c?c.t:'';ce.parentElement.style.opacity=c?clamp(Math.min((t-c.s)/0.2,(c.e-t)/0.2)):0;
+};
+</script></body></html>
