@@ -13,6 +13,7 @@ Short promotional videos (first project: clothing promotion), produced as progra
 
 ## Layout
 - `.claude/agents/chris.md`: the video producer agent.
+- `.claude/agents/scriptwriter.md`: the voice-over scriptwriter (English or Indonesian, playful); its approved script feeds Chris.
 - `.claude/skills/video-render/`: scene template, fonts, `scripts/` (setup, voice, render).
 - `videos/<project>/`: per-video storyboard, scene HTML, script, final MP4 (add when a video is made).
 
