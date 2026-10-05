@@ -115,7 +115,6 @@
 (function () {
   var DISKON = 10;      // persen
   var BULAT = 5000;     // rupiah
-  var KEY = "pricing.modal";
   var input = document.getElementById("modal");
 
   function fmt(n) {
@@ -148,13 +147,7 @@
         j.textContent = "-";
       }
     });
-    try { localStorage.setItem(KEY, digits); } catch (e) {}
   }
-
-  try {
-    var saved = localStorage.getItem(KEY);
-    if (saved) input.value = saved;
-  } catch (e) {}
 
   input.addEventListener("input", render);
   render();
