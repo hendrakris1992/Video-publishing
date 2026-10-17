@@ -48,6 +48,11 @@ Untuk segmen yang memperlihatkan punggung, tambahkan satu baris:
 The back of the garment matches the back reference image.
 ```
 
+## Aturan persetujuan sebelum kirim ke alat AI
+Sebelum job dikirim ke Higgsfield atau alat berbayar lain, tunjukkan ke pengguna: (1) prompt persis, (2) file mana dipakai untuk peran apa (depan, belakang, klip dan panjang potongannya), (3) resolusi dan biaya kredit. Tunggu "approve" dari pengguna. Instruksi anggaran ("habiskan kredit") bukan persetujuan atas prompt yang berubah sesudahnya. Tanyakan hal yang ambigu, misalnya apakah aksesori di foto referensi (sweater, jam) bagian dari baju.
+
+Catatan dari percobaan kedua: sweater rajut bergaris di foto referensi ternyata **bagian dari baju**, tapi prompt sempat menyuruh AI mengabaikannya karena tidak ditanyakan dulu.
+
 ## Daftar cek sebelum dipakai (tonton frame demi frame)
 1. Warna dan pola sama dengan foto produk, termasuk di bawah cahaya berbeda.
 2. Kerah, lengan, kancing atau saku sesuai produk asli, dan **panjang baju serta tucked in/keluar sesuai info baju** (dinilai pengguna).

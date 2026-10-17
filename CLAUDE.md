@@ -9,6 +9,7 @@ Short promotional videos (first project: clothing promotion), produced as progra
 - **Voice:** Voice A (Kokoro, 55% `af_bella` + 45% `af_nova`; `scripts/speak.py` is the source of truth), carried over from Genesis by default. Change only if the user asks. Exception, decided by the user: Indonesian videos are silent with captions only (Voice A is English-only).
 - **Look defaults:** vertical 1080x1920, 30 fps (final 60 fps), Sora + Inter, short captions on, 15 to 30 seconds. Brand colours/fonts override when the user provides them.
 - **Workflow:** Stage 1 storyboard + claims list, user approves; Stage 2 build and render. No publishing: files go to the user via `SendUserFile`. Commit and push to GitHub only when asked.
+- **AI generation approval (Higgsfield, Runway or any paid tool):** before every submission, show the user the exact prompt, which file is used for which role (e.g. front/back garment photos, source clip and its trimmed length), the resolution and the credit cost, and wait for an explicit "approve" in the user's own message. A budget instruction ("use the remaining credits") is not approval of a prompt that changed afterwards. Ask when anything is ambiguous, for example whether an accessory in a reference photo is part of the garment. Never submit after editing a prompt the user has not seen.
 - Use the user's own wording for the brand; reply in the language they write in.
 
 ## Layout
