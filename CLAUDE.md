@@ -12,7 +12,7 @@ Short promotional videos (first project: clothing promotion), produced as progra
 - Use the user's own wording for the brand; reply in the language they write in.
 
 ## Layout
-- `.claude/agents/emily.md`: coordinator/orchestrator; routes work to the three specialists below and keeps the user's approval gates. Must run as the main-thread agent to delegate (a subagent cannot start other agents).
+- `.claude/agents/emily.md`: coordinator/orchestrator; routes work to the three specialists below and keeps the user's approval gates. Set as the default main-thread agent in `.claude/settings.json` (`"agent": "emily"`); a subagent cannot start other agents, so she only delegates when she is the main agent.
 - `.claude/agents/chris.md`: the video producer agent.
 - `.claude/agents/scriptwriter.md`: the voice-over scriptwriter (English or Indonesian, playful); its approved script feeds Chris.
 - `.claude/agents/webdev.md`: UI designer + front-end coder for simple single-file HTML pages that open offline on iPhone; output goes to `apps/<name>/index.html`.
